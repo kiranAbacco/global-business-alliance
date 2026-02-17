@@ -1,0 +1,134 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql" // or mysql
+  url      = env("DATABASE_URL")
+}
+
+model MembershipApplication {
+  id Int @id @default(autoincrement())
+
+  // Applicant Information
+  prefix     String?
+  givenName  String
+  familyName String?
+  phone      String
+  title      String?
+
+  // Company Details
+  companyName    String
+  companyLogo    String?
+  companyAddress String
+  poBox          String?
+  postalCode     String?
+  city           String?
+  state          String?
+  country        String
+
+  industry          String?
+  industryMain      String?
+  subIndustry       String?
+  customIndustry    String?
+  customSubIndustry String?
+
+  companyEmail     String
+  companyTelephone String
+  companyWebsite   String
+
+  // ✅ NEW SOCIAL MEDIA FIELDS
+  facebook  String?
+  instagram String?
+  linkedin  String?
+  twitter   String?
+
+  visibility String
+
+  // Company Information
+  companyPurpose String?
+  foundingDate   DateTime?
+  employees      Int?
+  activities     String[]
+  specialFocus   String?
+  newProject     String?
+
+  // Company Management
+  contacts Json?
+
+  // Membership Agreement
+  acceptStatutes Boolean
+  donation       Boolean
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model User {
+  id         String    @id @default(uuid())
+  name       String
+  email      String    @unique
+  phone      String
+  password   String?
+  isVerified Boolean   @default(false)
+  otp        String?
+  otpExpiry  DateTime?
+  createdAt  DateTime  @default(now())
+
+  subscription Subscription? // 👈 ADD THIS LINE
+}
+
+model MagicLink {
+  id        Int      @id @default(autoincrement())
+  email     String
+  token     String   @unique
+  expiresAt DateTime
+  used      Boolean  @default(false)
+}
+
+enum PlanType {
+  FREE
+  PLAN2
+  PLAN3
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  EXPIRED
+  CANCELLED
+  PENDING
+}
+
+model Subscription {
+  id String @id @default(uuid())
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @unique
+
+  planType PlanType
+  status   SubscriptionStatus @default(PENDING)
+
+  country  String
+  currency String
+  price    Float
+
+  stripeSessionId  String?
+  stripePaymentId  String?
+  stripeCustomerId String?
+
+  startDate DateTime?
+  endDate   DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PlanPricing {
+  id       String   @id @default(uuid())
+  planType PlanType
+  country  String
+  currency String
+  price    Float
+
+  createdAt DateTime @default(now())
+}

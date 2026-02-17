@@ -1,0 +1,26 @@
+{
+  "name": "gba-backend",
+  "version": "1.0.0",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon server.js",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.22.0",
+    "cors": "^2.8.6",
+    "d3": "^7.9.0",
+    "dotenv": "^16.6.1",
+    "express": "^4.19.2",
+    "multer": "^2.0.2",
+    "nodemailer": "^7.0.13",
+    "prisma": "^5.22.0",
+    "razorpay": "^2.9.6",
+    "stripe": "^20.3.1",
+    "topojson-client": "^3.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
