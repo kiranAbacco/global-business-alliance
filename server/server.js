@@ -20,12 +20,6 @@ import paymentRoutes from "./src/routes/paymentRoutes.js";
 
 
 
-
-
-
-
-
-
 const app = express();
 
 
@@ -34,7 +28,8 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://r3zh6rrw-5173.inc1.devtunnels.ms"
+      "https://r3zh6rrw-5173.inc1.devtunnels.ms",
+      "https://global-business-alliance-1.onrender.com"
     ],
     credentials: true
   })
