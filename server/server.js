@@ -16,13 +16,7 @@ import chatRoutes from "./src/routes/chat.js";
 
 import paymentRoutes from "./src/routes/paymentRoutes.js";
 
-
-
-
-
 const app = express();
-
-
 
 app.use(
   cors({
