@@ -17,7 +17,7 @@ router.post("/magic-link", async (req, res) => {
     }
   });
 
-  const link = `http://localhost:5000/api/auth/verify?token=${token}`;
+  const link = `${process.env.API_URL}/api/auth/verify?token=${token}`;
   await sendMagicEmail(email, link);
 
   res.json({ success: true });
@@ -35,7 +35,7 @@ router.get("/verify", async (req, res) => {
     data: { used: true }
   });
 
-  res.redirect("http://localhost:5173/join-now");
+  res.redirect(`${process.env.CLIENT_URL}/join-now`);
 });
 
 export default router;

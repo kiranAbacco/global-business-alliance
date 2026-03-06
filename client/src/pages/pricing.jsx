@@ -2,14 +2,14 @@ import { Check, Star, Zap, Sparkles, Crown, Rocket, Shield, TrendingUp, Award, G
 import { Link } from "react-router-dom";
 
 import { useState } from "react";
-
+const API_URL = import.meta.env.VITE_API_BASE_URL;
 
 export default function MembershipPlans() {
     const [currency, setCurrency] = useState("USD");
     const handleCheckout = async () => {
         try {
             const response = await fetch(
-                "http://localhost:5000/api/payment/create-checkout-session",
+                `${API_URL}/api/payment/create-checkout-session`,
                 {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },

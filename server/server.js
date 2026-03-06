@@ -21,9 +21,9 @@ const app = express();
 app.use(
   cors({
     origin: [
+      "https://global-business-alliance-1.onrender.com",
       "http://localhost:5173",
       "https://r3zh6rrw-5173.inc1.devtunnels.ms",
-      "https://global-business-alliance-1.onrender.com"
     ],
     credentials: true
   })

@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Mail, Phone, Globe, MapPin, User, Building, Filter } from "lucide-react";
-
+const API_URL = import.meta.env.VITE_API_BASE_URL;
 export default function CountryMembers() {
     const { country } = useParams();
     const countryName = country.replace(/-/g, " ");
@@ -22,7 +22,7 @@ export default function CountryMembers() {
             params.append("industry", selectedIndustry);
         }
 
-        fetch(`http://localhost:5000/api/memberships?${params}`)
+        fetch(`${API_URL}/api/memberships?${params}`)
             .then(res => res.json())
             .then(data => setMembers(data))
             .finally(() => setLoading(false));
@@ -32,7 +32,7 @@ export default function CountryMembers() {
         if (!countryName) return;
 
         fetch(
-            `http://localhost:5000/api/memberships/industries?country=${countryName}`
+            `${API_URL}/api/memberships/industries?country=${countryName}`
         )
             .then(res => res.json())
             .then(data => setIndustries(data));
