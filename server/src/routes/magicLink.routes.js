@@ -7,16 +7,24 @@ const router = express.Router();
 
 router.post("/magic-link", async (req, res) => {
   try {
+    console.log("📩 Magic link request received");
 
     const { email } = req.body;
 
     if (!email) {
-      return res.status(400).json({ message: "Email required" });
+      console.log("❌ Email missing");
+      return res.status(400).json({ message: "Email is required" });
     }
 
+    console.log("📧 Email:", email);
+
+    // Generate token
     const token = crypto.randomBytes(32).toString("hex");
 
-    await prisma.magicLink.create({
+    console.log("🔑 Generated token:", token);
+
+    // Save to DB
+    const record = await prisma.magicLink.create({
       data: {
         email,
         token,
@@ -24,30 +32,68 @@ router.post("/magic-link", async (req, res) => {
       }
     });
 
+    console.log("💾 Magic link saved to DB:", record.id);
+
+    // Generate link
     const link = `${process.env.API_URL}/api/auth/verify?token=${token}`;
 
+    console.log("🔗 Magic link created:", link);
+
+    // Send email
+    console.log("📤 Sending email...");
     await sendMagicEmail(email, link);
 
-    res.json({ success: true });
+    console.log("✅ Email sent successfully");
+
+    res.json({
+      success: true,
+      message: "Magic link sent"
+    });
 
   } catch (error) {
-    console.error("Magic link error:", error);
-    res.status(500).json({ message: "Failed to send magic link" });
+    console.error("❌ Magic link error:", error);
+    res.status(500).json({ message: "Server error sending magic link" });
   }
 });
+
+
 router.get("/verify", async (req, res) => {
-  const record = await prisma.magicLink.findFirst({
-    where: { token: req.query.token, used: false }
-  });
+  try {
+    const { token } = req.query;
 
-  if (!record) return res.send("Invalid link");
+    console.log("🔎 Verifying token:", token);
 
-  await prisma.magicLink.update({
-    where: { id: record.id },
-    data: { used: true }
-  });
+    const record = await prisma.magicLink.findFirst({
+      where: {
+        token,
+        used: false
+      }
+    });
 
-  res.redirect(`${process.env.CLIENT_URL}/join-now`);
+    if (!record) {
+      console.log("❌ Invalid or used token");
+      return res.send("Invalid or expired magic link");
+    }
+
+    console.log("✅ Valid token for:", record.email);
+
+    await prisma.magicLink.update({
+      where: { id: record.id },
+      data: { used: true }
+    });
+
+    console.log("🔐 Token marked as used");
+
+    const redirectUrl = `${process.env.CLIENT_URL}/join-now`;
+
+    console.log("➡ Redirecting to:", redirectUrl);
+
+    res.redirect(redirectUrl);
+
+  } catch (error) {
+    console.error("❌ Verify error:", error);
+    res.status(500).send("Verification failed");
+  }
 });
 
 export default router;
